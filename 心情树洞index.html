@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心情树洞 | 你的情感倾诉港湾</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: #a8d8ff;
+            text-shadow: 0 0 15px rgba(168, 216, 255, 0.7);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .option-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .option-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #a8d8ff;
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .option-desc {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .message-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            display: none;
+        }
+
+        .message {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .close-btn {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .message {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 浮动背景元素 -->
+    <div class="floating-elements" id="floatingElements"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-tree"></i>
+            </div>
+            <h1>心情树洞</h1>
+            <p class="subtitle">一个安全温暖的倾诉空间，当你需要时，总有一句话为你而准备</p>
+        </header>
+        
+        <div class="options-grid">
+            <div class="option-card" data-message="我最爱的宝宝，累了就休息一会，没事哒，我永远相信你的实力！你也要一样噢">
+                <div class="option-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3 class="option-title">当你觉得复习到累了</h3>
+                <p class="option-desc">点击这里获取温暖的鼓励和休息的建议</p>
+            </div>
+            
+            <div class="option-card" data-message="宝宝我也很想你呢！想我了不用硬撑噢，我随时都在，我也在等你呀，我也好想你😔">
+                <div class="option-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="option-title">当你想我了</h3>
+                <p class="option-desc">点击这里感受我对你的思念和温暖</p>
+            </div>
+            
+            <div class="option-card" data-message="宝宝！我在！您需要什么嘛我的宝宝，一个抱抱？一个亲亲？嘻嘻那你来发消息给我吧，我给你100个抱抱">
+                <div class="option-icon">
+                    <i class="fas fa-hands-helping"></i>
+                </div>
+                <h3 class="option-title">当你需要陪伴</h3>
+                <p class="option-desc">点击这里获得虚拟的拥抱和陪伴</p>
+            </div>
+            
+            <div class="option-card" data-message="宝宝辛苦啦，读了一整天的书，累不累呀。宝宝快去睡了囖，明天又是新的一天了耶。记得盖好被不要着凉噢。">
+                <div class="option-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <h3 class="option-title">当你想睡觉</h3>
+                <p class="option-desc">点击这里获取温柔的晚安祝福</p>
+            </div>
+        </div>
+        
+        <!-- 消息显示区域 -->
+        <div id="messageContainer" class="message-container">
+            <p id="messageContent" class="message"></p>
+            <button class="close-btn" id="closeBtn">
+                <i class="fas fa-times"></i> 关闭
+            </button>
+        </div>
+        
+        <footer>
+            <p>心情树洞 • 你的情感倾诉港湾</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 创建浮动背景元素
+        function createFloatingElements() {
+            const container = document.getElementById('floatingElements');
+            const count = 15;
+            
+            for (let i = 0; i < count; i++) {
+                const element = document.createElement('div');
+                element.classList.add('floating-element');
+                
+                // 随机大小和位置
+                const size = Math.random() * 60 + 20;
+                const left = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 10 + 10;
+                
+                element.style.width = `${size}px`;
+                element.style.height = `${size}px`;
+                element.style.left = `${left}%`;
+                element.style.animationDelay = `${delay}s`;
+                element.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(element);
+            }
+        }
+        
+        // 显示消息函数
+        function showMessage(message) {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageContent = document.getElementById('messageContent');
+            
+            messageContent.textContent = message;
+            messageContainer.style.display = 'block';
+            
+            // 平滑滚动到消息区域
+            messageContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // 隐藏消息函数
+        function hideMessage() {
+            document.getElementById('messageContainer').style.display = 'none';
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            createFloatingElements();
+            
+            // 为所有选项卡片添加点击事件
+            const optionCards = document.querySelectorAll('.option-card');
+            optionCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const message = card.getAttribute('data-message');
+                    showMessage(message);
+                });
+            });
+            
+            // 为关闭按钮添加点击事件
+            document.getElementById('closeBtn').addEventListener('click', hideMessage);
+        });
+    </script>
+</body>
+</html>
